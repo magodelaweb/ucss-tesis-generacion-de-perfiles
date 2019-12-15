@@ -1,0 +1,10 @@
+.card-body>ul.list-group>li.list-group-item>h2{
+  margin-bottom: 0;
+}
+.card-body>ul.list-group>li.list-group-item>h2>.badge{
+  margin-top:0.5em;
+  margin-bottom:0.5em;
+}
+.card-body>ul.list-group>li.list-group-item>h2>.badge>.badge{
+  margin-left: 0.5em;
+}

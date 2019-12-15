@@ -1,5 +1,8 @@
 {% extends 'perfiles/layout.html' %}
-
+{% load static%}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'perfiles/css/ver_15_12_19_7_3.css' %}">
+{% endblock %}
 {% block content %}
     <!-- HEADER -->
 <div class="header">
@@ -19,6 +22,11 @@
         <h1 class="header-title">
           Ver Perfiles
         </h1>
+        <p class="card-text text-muted">
+          <small>
+            Atributos con una coincidencia mayor al {{precision}}%.
+          </small>
+        </p>
         {{test}}
         {% comment %}
         <ul>
@@ -41,62 +49,67 @@
 </div> <!-- / .header -->
 
 <!-- CONTENT -->
-      <div class="container-fluid">
-        <div class="row">
-          {% for obj in perfiles %}
-            <div class="col-12 col-lg-6">
-              <!-- Card -->
-              <div class="card">
-                <div class="card-body">
-                  <!-- Dropdown -->
-                  <div class="dropdown card-dropdown">
-                    <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fe fe-more-vertical"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                      <a href="#!" class="dropdown-item">
-                        Action
-                      </a>
-                      <a href="#!" class="dropdown-item">
-                        Another action
-                      </a>
-                      <a href="#!" class="dropdown-item">
-                        Something else here
-                      </a>
-                    </div>
-                  </div>
-                  <!-- Title -->
-                  <h2 class="card-title text-center mb-3">
-                    <a href="team-overview.html">Perfil {{obj.perfil}}</a>
-                  </h2>
-                  <!-- Text -->
-                  <p class="card-text text-center text-muted mb-4">
-                    Generado por el sistema.
-                  </p>
-                  <!-- Divider -->
-                  <hr>
-                  <div class="row align-items-center">
-                    <div class="col">
-                      <!-- Time -->
-                      <p class="card-text small text-muted">
-                        <i class="fe fe-clock"></i> Updated 2hr ago
-                      </p>
-                    </div>
-                    <div class="col-auto">
-                      <!-- Avatar group -->
-                      <div class="avatar-group">
-                        {% for cli in obj.clientes %}
-                        <div class="avatar avatar-xl">
-                          <div class="avatar-title rounded-circle"> <small>{{cli.nombre}}</small> </div>
-                        </div>
-                        {% endfor %}
-                      </div>
-                    </div>
-                  </div> <!-- / .row -->
-                </div> <!-- / .card-body -->
+<div class="container-fluid">
+  <div class="row">
+    {% for obj in perfiles %}
+      <div class="col-12 col-lg-6">
+        <!-- Card -->
+        <div class="card">
+          <div class="card-body">
+            <!-- Dropdown -->
+            <div class="dropdown card-dropdown">
+              <a href="#" class="dropdown-ellipses dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fe fe-more-vertical"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <a href="#!" class="dropdown-item">
+                  Enviar Email a los clientes de este perfil
+                </a>
+                <a href="#!" class="dropdown-item">
+                  Otra acción
+                </a>
+                <a href="#!" class="dropdown-item">
+                  Algo aquí
+                </a>
               </div>
             </div>
-          {% endfor %}
-        </div> <!-- / .row -->
+            <!-- Title -->
+            <h2 class="card-title text-center mb-3">
+              <a href="team-overview.html">Perfil {{obj.perfil}}</a>
+            </h2>
+            <!-- Text -->
+            <p class="card-text text-center text-muted mb-4">
+              Generado por el sistema.
+              <ul class="list-group"><li class="list-group-item list-group-item-light"><h2>
+                {% for etq in obj.etiquetas %}
+                  <span class="badge badge-pill badge-info">{{etq.etq}}<span class="badge badge-primary">{{etq.pres}}</span></span>
+                {% endfor %}
+              </h2></li></ul>
+            </p>
+            <!-- Divider -->
+            <hr>
+            <div class="row align-items-center">
+              <div class="col">
+                <!-- Time -->
+                <p class="card-text small text-muted">
+                  <i class="fe fe-clock"></i> Updated 2hr ago
+                </p>
+              </div>
+              <div class="col-auto">
+                <!-- Avatar group -->
+                <div class="avatar-group">
+                  {% for cli in obj.clientes %}
+                  <div class="avatar avatar-xl">
+                    <div class="avatar-title rounded-circle"> <small>{{cli.nombre}}</small> </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div> <!-- / .row -->
+          </div> <!-- / .card-body -->
+        </div>
       </div>
+    {% endfor %}
+  </div> <!-- / .row -->
+</div>
 {% endblock %}

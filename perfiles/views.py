@@ -2,7 +2,12 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from perfiles.models import Operacion, Cliente
+from perfiles.clases import Cliente_Cubo, Funciones_Cubo
 import configparser
+#from pprint import pprint
+#import json
+#from django.core import serializers
+#from django.http import JsonResponse
 
 # Create your views here.
 def perfiles(request):
@@ -18,37 +23,49 @@ def perfiles(request):
     }
     return HttpResponse(template.render(context, request))
 def ver(request):
+    config = configparser.ConfigParser()
+    config.read('perfiles/config.ini')
     #latest_question_list = Question.objects.order_by('-pub_date')[:5]
     template = loader.get_template('perfiles/ver.html')
     perfiles=generarPerfiles()
     clientes=getClientes()
-    list = relacionar(perfiles,clientes)
-    """list = [{"perfil":1, "clientes":[
-    {"nombre":"Arturo"},{"nombre":"Melissa"}]},
-    {"perfil":2, "clientes":[
-    {"nombre":"Alex"},{"nombre":"Dany"}]},
-    {"perfil":3, "clientes":[
-    {"nombre":"Ald"}]},
-    {"perfil":4, "clientes":[
-    {"nombre":"Jr"}]}]"""
-    #test=generarPerfiles()
+    listPrev = relacionar(perfiles,clientes)
+    list=etiquetado(listPrev)
+    #itemTest= test.__dict__
+    #data = serializers.serialize('json', itemTest)
+    #data = vars(vTest)
     context = {
         'menu':1,
         'perfiles':list,
-        #'test':test
+        'precision':float(config['CLUSTER']['PRECISION'])*100
+        #'test':vTest
         #'latest_question_list': latest_question_list,
     }
     return HttpResponse(template.render(context, request))
+
+
+
+def print_r(the_object):
+    print ("CLASS: ", the_object.__class__.__name__, " (BASE CLASS: ", the_object.__class__.__bases__,")")
+    pprint(vars(the_object))
+
+def etiquetado(perfiles):
+    vPerfil=Funciones_Cubo(perfiles)
+    nPerfil=vPerfil.traerCubos()
+    vPerfil.actualizarPerfiles(nPerfil)
+    resp=vPerfil.calcularEtiquetas()
+    return resp
 
 def relacionar(perfiles,clientes):
     list=[]
     for i in range(0,len(perfiles)):
         listCli=[]
         for j in range(0,len(perfiles[i])):
-            cli=clientes.filter(id=perfiles[i][j]).values('nombre')[0]['nombre']
-            nomCli=cli.split()[0]
-            listCli.append({"nombre":nomCli})
-        obj={"perfil":i+1,"clientes":listCli}
+            cli=clientes.filter(id=perfiles[i][j]).values('nombre','id')[0]
+            nomCli=cli['nombre'].split()[0]
+            idCli=cli['id']
+            listCli.append({"nombre":nomCli, "id":idCli})
+        obj={"perfil":i+1,"clientes":listCli, "cubos":[], "etiquetas":[]}
         list.append(obj)
     return list
 
